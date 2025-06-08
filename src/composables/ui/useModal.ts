@@ -1,58 +1,61 @@
-import { reactive } from 'vue'
-import type { Modal, ModalSize } from '@/types/ui'
+// composables/ui/useModal.ts
+import { ref, reactive, markRaw } from 'vue'
 
-const modalState = reactive<{
-  modals: Modal[]
-  nextId: number
-}>({
-  modals: [],
-  nextId: 1
-})
+interface ModalOptions {
+  title?: string
+  props?: Record<string, any>
+  size?: 'small' | 'medium' | 'large'
+  onSave?: (data: any) => void
+  onConfirm?: (data: any) => void
+  onClose?: () => void
+}
+
+interface Modal {
+  id: number
+  component: any
+  title: string
+  props: Record<string, any>
+  size: string
+  onSave?: (data: any) => void
+  onConfirm?: (data: any) => void
+  onClose: () => void
+}
+
+const modals = ref<Modal[]>([])
+let modalIdCounter = 0
 
 export function useModal() {
-  const openModal = (
-    component: any,
-    options: {
-      title?: string
-      props?: Record<string, any>
-      size?: ModalSize
-      persistent?: boolean
-    } = {}
-  ): number => {
+  const openModal = (component: any, options: ModalOptions = {}) => {
+    const modalId = ++modalIdCounter
+    
     const modal: Modal = {
-      id: modalState.nextId++,
-      component,
-      title: options.title || '',
+      id: modalId,
+      component: markRaw(component),
+      title: options.title || 'Modal',
       props: options.props || {},
       size: options.size || 'medium',
-      persistent: options.persistent || false
+      onSave: options.onSave,
+      onConfirm: options.onConfirm,
+      onClose: () => closeModal(modalId)
     }
-    
-    modalState.modals.push(modal)
-    return modal.id
+
+    modals.value.push(modal)
+    return modalId
   }
-  
-  const closeModal = (id?: number): void => {
-    if (id) {
-      // 특정 모달 제거
-      const index = modalState.modals.findIndex(m => m.id === id)
-      if (index !== -1) {
-        modalState.modals.splice(index, 1)
-      }
-    } else {
-      // 가장 최근 모달 제거
-      if (modalState.modals.length > 0) {
-        modalState.modals.pop()
-      }
+
+  const closeModal = (modalId: number) => {
+    const index = modals.value.findIndex(m => m.id === modalId)
+    if (index > -1) {
+      modals.value.splice(index, 1)
     }
   }
-  
-  const closeAllModals = (): void => {
-    modalState.modals.length = 0
+
+  const closeAllModals = () => {
+    modals.value = []
   }
-  
+
   return {
-    modals: modalState.modals,
+    modals,
     openModal,
     closeModal,
     closeAllModals

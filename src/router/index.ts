@@ -5,6 +5,7 @@ import TestView from '../views/TestView.vue'
 import AboutView from '../views/AboutView.vue'
 import PortalView from '../views/PortalView.vue'
 import ComposableView from '../views/ComposableView.vue'
+import ModalView from '../views/ModalView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/composable',
       name: 'composable',
       component: ComposableView
+    },
+    {
+      path: '/modal',
+      name: 'modal',
+      component: ModalView
     }
   ]
 })

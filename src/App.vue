@@ -15,6 +15,7 @@
           <RouterLink to="/about" class="nav-link">About</RouterLink>
           <RouterLink to="/portal" class="nav-link">Portal</RouterLink>
           <RouterLink to="/composable" class="nav-link">Composable</RouterLink>
+          <RouterLink to="/modal" class="nav-link">Modal</RouterLink>
         </div>
       </div>
     </nav>

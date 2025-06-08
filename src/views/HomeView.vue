@@ -5,12 +5,6 @@
       <img alt="Vue logo" class="logo" src="../assets/logo.svg" width="125" height="125" />
       <h1>🔥 Vue UI 마라톤 시작!</h1>
       <p>25시간 만에 Vue 마스터 되기</p>
-      
-      <div class="quick-links">
-        <RouterLink to="/test" class="hero-btn">테스트 페이지로 이동</RouterLink>
-        <RouterLink to="/about" class="hero-btn secondary">About 보기</RouterLink>
-        <RouterLink to="/portal" class="hero-btn secondary">Portal 보기</RouterLink>
-      </div>
     </div>
     
     <div class="info-section">
@@ -26,7 +20,6 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
 </script>
 
 <style scoped>

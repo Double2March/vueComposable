@@ -3,7 +3,7 @@
   <div class="example-container">
     <h1>UI 시스템 사용 예제</h1>
     
-    <!-- Toast 예제 -->
+    <!-- Toast -->
     <section class="example-section">
       <h2>🍞 Toast 사용법</h2>
       <div class="button-group">
@@ -15,7 +15,7 @@
       </div>
     </section>
 
-    <!-- Alert 예제 -->
+    <!-- Alert -->
     <section class="example-section">
       <h2>🚨 Alert 사용법</h2>
       <div class="button-group">
@@ -26,7 +26,7 @@
       </div>
     </section>
 
-    <!-- Loading 예제 -->
+    <!-- Loading -->
     <section class="example-section">
       <h2>⏳ Loading 사용법</h2>
       <div class="button-group">
@@ -37,13 +37,14 @@
       </div>
     </section>
 
-    <!-- Modal 예제 -->
+    <!-- Modal -->
     <section class="example-section">
       <h2>🪟 Modal 사용법</h2>
       <div class="button-group">
         <button @click="showSimpleModal">Simple Modal</button>
-        <button @click="showCustomModal">Custom Modal</button>
-        <button @click="showPersistentModal">Persistent Modal</button>
+        <button @click="showUserFormModal">👤 사용자 폼</button>
+        <button @click="showProductFormModal">📦 상품 폼</button>
+        <button @click="showDeleteConfirmModal">🗑️ 삭제 확인</button>
       </div>
     </section>
 
@@ -66,6 +67,10 @@ import { useToast } from '@/composables/ui/useToast'
 import { useAlert } from '@/composables/ui/useAlert'
 import { useLoading } from '@/composables/ui/useLoading'
 import { useModal } from '@/composables/ui/useModal'
+// 3개 폼 컴포넌트 import
+import SimpleForm from '@/components/SimpleForm.vue'
+import ProductForm from '@/components/ProductForm.vue'
+import DeleteConfirm from '@/components/DeleteConfirm.vue'
 
 // 🔥 통합 UI 사용
 const ui = useUI()
@@ -196,64 +201,48 @@ const showSimpleModal = () => {
   })
 }
 
-const showCustomModal = () => {
-  const CustomModalContent = {
-    template: `
-      <div style="padding: 20px;">
-        <h3>사용자 정의 모달</h3>
-        <p>이름: {{ name }}</p>
-        <p>나이: {{ age }}</p>
-        <input v-model="message" placeholder="메시지를 입력하세요" style="width: 100%; padding: 8px; margin: 10px 0;">
-        <div style="text-align: right; margin-top: 20px;">
-          <button @click="$emit('close')" class="btn btn-cancel" style="margin-right: 8px;">
-            취소
-          </button>
-          <button @click="save" class="btn btn-confirm">
-            저장
-          </button>
-        </div>
-      </div>
-    `,
-    props: ['name', 'age'],
-    emits: ['close'],
-    setup(props, { emit }) {
-      const message = ref('')
-      
-      const save = () => {
-        ui.success(`메시지 저장: ${message.value}`)
-        emit('close')
-      }
-      
-      return { message, save }
+// 🔥 3개 폼 모달 추가 (컴포넌트 사용)
+const showUserFormModal = () => {
+  ui.openModal(SimpleForm, {
+    title: '👤 사용자 폼',
+    props: {
+      initialName: '',
+      initialEmail: '',
+      initialPhone: '',
+      isPortal: true
+    },
+    size: 'medium',
+    onSave: (data) => {
+      ui.success(`사용자 정보 저장 완료: ${JSON.stringify(data)}`)
     }
-  }
-  
-  ui.openModal(CustomModalContent, {
-    title: '사용자 정보',
-    props: { name: '홍길동', age: 30 },
-    size: 'medium'
   })
 }
 
-const showPersistentModal = () => {
-  const PersistentModalContent = {
-    template: `
-      <div style="padding: 20px; text-align: center;">
-        <h3>⚠️ 중요한 알림</h3>
-        <p>이 모달은 오버레이 클릭으로 닫을 수 없습니다.</p>
-        <p>반드시 버튼을 클릭해야 합니다.</p>
-        <button @click="$emit('close')" class="btn btn-confirm">
-          확인했습니다
-        </button>
-      </div>
-    `,
-    emits: ['close']
-  }
-  
-  ui.openModal(PersistentModalContent, {
-    title: '중요 알림',
-    persistent: true,
-    size: 'small'
+const showProductFormModal = () => {
+  ui.openModal(ProductForm, {
+    title: '📦 상품 폼',
+    props: {
+      initialProduct: { name: '', price: 0, category: '' },
+      isPortal: true
+    },
+    size: 'medium',
+    onSave: (data) => {
+      ui.success(`상품 정보 저장 완료: ${JSON.stringify(data)}`)
+    }
+  })
+}
+
+const showDeleteConfirmModal = () => {
+  ui.openModal(DeleteConfirm, {
+    title: '🗑️ 삭제 확인',
+    props: {
+      itemName: '중요한 파일.pdf',
+      isPortal: true
+    },
+    size: 'small',
+    onConfirm: (data) => {
+      ui.success(`삭제 확인됨: ${JSON.stringify(data)}`)
+    }
   })
 }
 

@@ -47,6 +47,7 @@ export function useLoading() {
     loadingState.loadings.length = 0
   }
   
+  //progress Bar
   const updateProgress = (id: number, progress: number): void => {
     const loading = loadingState.loadings.find(l => l.id === id)
     if (loading) {
